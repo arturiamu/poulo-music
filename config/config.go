@@ -15,7 +15,7 @@ const (
 )
 
 var defaultCfg = Config{
-	App: App{Name: "BiliMusicify", Mode: "release", Version: "v0.0.1", FileServerAddr: "http://localhost:51730"},
+	App: App{Name: "poulo-music", Mode: "release", Version: "v0.0.1", FileServerAddr: "http://localhost:51730"},
 	Dir: Dir{},
 }
 
