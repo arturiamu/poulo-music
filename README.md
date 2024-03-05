@@ -4,6 +4,20 @@ poulo-music is an open source and free cross-platform music player.
 
 project inspired by [spotube](https://github.com/KRTirtho/spotube),
 
+# Installation
+
+```shell
+git clone https://github.com/arturiamu/poulo-music.git
+
+cd poulo-music
+
+go mod tidy
+
+go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+wails dev
+```
+
 # Features
 - Completely free
 - No ads
