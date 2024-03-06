@@ -25,7 +25,7 @@ func (m *MusicLocalstorage) SaveMusic(ctx context.Context, music *models.Music) 
 	return music, m.db.Save(&music).Error
 }
 
-func (m *MusicLocalstorage) RemoveMusic(ctx context.Context, id uint) (*models.Music, error) {
+func (m *MusicLocalstorage) RemoveMusic(ctx context.Context, id int64) (*models.Music, error) {
 	return nil, m.db.Delete(&models.Music{ID: id}).Error
 }
 
@@ -34,7 +34,7 @@ func (m *MusicLocalstorage) ModifyMusic(ctx context.Context, music *models.Music
 	panic("implement me")
 }
 
-func (m *MusicLocalstorage) GetMusicByID(ctx context.Context, id uint) (*models.Music, error) {
+func (m *MusicLocalstorage) GetMusicByID(ctx context.Context, id int64) (*models.Music, error) {
 	var misic = models.Music{ID: id}
 	return &misic, m.db.First(&misic).Error
 }
@@ -54,7 +54,7 @@ func (m *MusicLocalstorage) ListAllMusic(ctx context.Context) ([]*models.Music, 
 	return musics, m.db.Find(&musics).Error
 }
 
-func (m *MusicLocalstorage) ListMusicByPlaylistID(ctx context.Context, playlistId uint) ([]*models.Music, error) {
+func (m *MusicLocalstorage) ListMusicByPlaylistID(ctx context.Context, playlistId int64) ([]*models.Music, error) {
 	var musics []*models.Music
 	return musics, m.db.Table("musics m").
 		Select("m.id,m.bv_id,m.name,m.time_skips_str,m.hash,m.created_at,m.updated_at").
@@ -66,7 +66,7 @@ func (m *MusicLocalstorage) SavePlaylist(ctx context.Context, playList *models.P
 	return playList, m.db.Save(&playList).Error
 }
 
-func (m *MusicLocalstorage) RemovePlaylist(ctx context.Context, id uint) (*models.Playlist, error) {
+func (m *MusicLocalstorage) RemovePlaylist(ctx context.Context, id int64) (*models.Playlist, error) {
 	return nil, m.db.Delete(&models.Playlist{ID: id}).Error
 }
 
@@ -75,7 +75,7 @@ func (m *MusicLocalstorage) ModifyPlaylist(ctx context.Context, playlist *models
 	panic("implement me")
 }
 
-func (m *MusicLocalstorage) GetPlaylistByID(ctx context.Context, id uint) (*models.Playlist, error) {
+func (m *MusicLocalstorage) GetPlaylistByID(ctx context.Context, id int64) (*models.Playlist, error) {
 	var playlist = models.Playlist{ID: id}
 	return &playlist, m.db.First(&playlist).Error
 }
@@ -89,6 +89,6 @@ func (m *MusicLocalstorage) SavePlaylistItem(ctx context.Context, playListItem *
 	return playListItem, m.db.Save(&playListItem).Error
 }
 
-func (m *MusicLocalstorage) RemovePlaylistItem(ctx context.Context, id uint) (*models.PlaylistItem, error) {
+func (m *MusicLocalstorage) RemovePlaylistItem(ctx context.Context, id int64) (*models.PlaylistItem, error) {
 	return nil, m.db.Delete(&models.PlaylistItem{ID: id}).Error
 }

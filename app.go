@@ -122,9 +122,14 @@ func (a *App) GetBiliAudio(bvid string) (vo models.VO) {
 		return vo.Fail(err.Error())
 	}
 
+	//var music = models.Music{
+	//	ID: 0, BVId: bvid, Name: video.Title, Title: video.Title,
+	//	Pic: a.cfg.App.FileServerAddr + Sep + filepath.Base(u.Path),
+	//}
+
 	var music = models.Music{
-		ID: 0, BVId: bvid, Name: video.Title, Title: video.Title,
-		Pic: a.cfg.App.FileServerAddr + Sep + filepath.Base(u.Path),
+		ID:    0,
+		Cover: a.cfg.App.FileServerAddr + Sep + filepath.Base(u.Path),
 	}
 
 	var mp3 = cache + Sep + bvid + ".mp3"

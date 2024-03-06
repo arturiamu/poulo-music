@@ -22,7 +22,7 @@ func (u UseCase) SaveMusic(ctx context.Context, music *models.Music) (*models.Mu
 	return u.musicRepo.SaveMusic(ctx, music)
 }
 
-func (u UseCase) RemoveMusic(ctx context.Context, id uint) (*models.Music, error) {
+func (u UseCase) RemoveMusic(ctx context.Context, id int64) (*models.Music, error) {
 	return u.musicRepo.RemoveMusic(ctx, id)
 }
 
@@ -30,7 +30,7 @@ func (u UseCase) ModifyMusic(ctx context.Context, music *models.Music) (*models.
 	return u.musicRepo.ModifyMusic(ctx, music)
 }
 
-func (u UseCase) GetMusicByID(ctx context.Context, id uint) (*models.Music, error) {
+func (u UseCase) GetMusicByID(ctx context.Context, id int64) (*models.Music, error) {
 	return u.musicRepo.GetMusicByID(ctx, id)
 }
 
@@ -46,7 +46,7 @@ func (u UseCase) ListAllMusic(ctx context.Context) ([]*models.Music, error) {
 	return u.musicRepo.ListAllMusic(ctx)
 }
 
-func (u UseCase) ListMusicByPlaylistID(ctx context.Context, playlistId uint) ([]*models.Music, error) {
+func (u UseCase) ListMusicByPlaylistID(ctx context.Context, playlistId int64) ([]*models.Music, error) {
 	return u.musicRepo.ListMusicByPlaylistID(ctx, playlistId)
 }
 
@@ -54,7 +54,7 @@ func (u UseCase) SavePlaylist(ctx context.Context, playList *models.Playlist) (*
 	return u.musicRepo.SavePlaylist(ctx, playList)
 }
 
-func (u UseCase) RemovePlaylist(ctx context.Context, id uint) (*models.Playlist, error) {
+func (u UseCase) RemovePlaylist(ctx context.Context, id int64) (*models.Playlist, error) {
 	return u.musicRepo.RemovePlaylist(ctx, id)
 }
 
@@ -62,7 +62,7 @@ func (u UseCase) ModifyPlaylist(ctx context.Context, playlist *models.Playlist) 
 	return u.musicRepo.ModifyPlaylist(ctx, playlist)
 }
 
-func (u UseCase) GetPlaylistByID(ctx context.Context, id uint) (*models.Playlist, error) {
+func (u UseCase) GetPlaylistByID(ctx context.Context, id int64) (*models.Playlist, error) {
 	return u.musicRepo.GetPlaylistByID(ctx, id)
 }
 
@@ -74,6 +74,6 @@ func (u UseCase) SavePlaylistItem(ctx context.Context, playListItem *models.Play
 	return u.musicRepo.SavePlaylistItem(ctx, playListItem)
 }
 
-func (u UseCase) RemovePlaylistItem(ctx context.Context, id uint) (*models.PlaylistItem, error) {
+func (u UseCase) RemovePlaylistItem(ctx context.Context, id int64) (*models.PlaylistItem, error) {
 	return u.musicRepo.RemovePlaylistItem(ctx, id)
 }

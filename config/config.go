@@ -44,7 +44,7 @@ func (d *Dir) makeDirAll() error {
 
 	var dirs = []string{"cache", "log", "data", "tmp"}
 	for _, dir := range dirs {
-		err := os.MkdirAll(d.BaseDir+Spe+dir, 0o666)
+		err := os.MkdirAll(d.BaseDir+Spe+dir, os.ModePerm)
 		if err != nil {
 			return err
 		}
@@ -83,8 +83,8 @@ func Init() (cfg *Config, err error) {
 func getDefaultDir() (dir Dir) {
 	switch runtime.GOOS {
 	case "darwin":
-		dir.ConfigDir = os.Getenv("HOME") + "/Library/Application Support/" + "BiliMusicify"
-		dir.BaseDir = os.Getenv("HOME") + "/Library/Caches/" + "BiliMusicify"
+		dir.ConfigDir = "./config"
+		dir.BaseDir = "./dir"
 	case "windows":
 		userRoaming := os.Getenv("APPDATA")       //C:\Users\{UserName}\AppData\Roaming
 		AppDataLocal := os.Getenv("LOCALAPPDATA") //C:\Users\{UserName}\AppData\Local
