@@ -54,16 +54,14 @@ func (d *Dir) makeDirAll() error {
 
 // Init 初始化配置
 func Init() (cfg *Config, err error) {
-	dir := getDefaultDir()
-
-	_, err = os.Stat(dir.ConfigDir + Sep + CfgFileName) // ~/Library/Preferences/Poulo/config.yml
-	if os.IsNotExist(err) {                             //配置文件不存在,创建默认配置文件
-		err := dir.makeDirAll()
+	defaultCfg.Dir = getDefaultDir()
+	_, err = os.Stat(defaultCfg.Dir.ConfigDir + Sep + CfgFileName) // ~/Library/Preferences/Poulo/config.yml
+	if os.IsNotExist(err) {                                        //配置文件不存在,创建默认配置文件
+		err := defaultCfg.Dir.makeDirAll()
 		if err != nil {
 			return nil, err
 		}
 
-		defaultCfg.Dir = dir
 		err = defaultCfg.save()
 		if err != nil {
 			return nil, err
@@ -90,7 +88,7 @@ func getDefaultDir() (dir Dir) {
 
 	switch runtime.GOOS {
 	case "darwin":
-		home := os.Getenv("HOME") ///Users/xxx
+		home := os.Getenv("HOME") ///Users/{UserName}
 		dir.ConfigDir = home + "/Library/Preferences/Poulo"
 		dir.BaseDir = home + "/Library/Caches/Poulo"
 	case "windows":
