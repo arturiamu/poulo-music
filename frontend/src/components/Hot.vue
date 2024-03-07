@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted} from 'vue';
+import {reactive, onMounted, onActivated} from 'vue';
 import {useStore} from 'vuex'
 import {GetBiliMusicRanking,GetBiliAudio} from "../../wailsjs/go/main/App.js";
 import {LogError} from "../../wailsjs/runtime/runtime.js";
@@ -44,6 +44,10 @@ function getAudio (o){
   })
 }
 
+// onActivated(() => {
+//   LogError("Hot onActivated")
+// })
+
 onMounted(() => {
   getRankingData()
 })
@@ -70,7 +74,7 @@ function getRankingData() {
     <div style="font-size: 35px;color: #272727">热门音乐</div>
     <div class="platform"  style="font-size: 18px;color: #272727">哔哩哔哩</div>
     <div class="swiper swiper-bili">
-      <swiper class="swiper-wrapper" :slides-per-group="3" :slides-per-view="3" :space-between="20">
+      <swiper class="swiper-wrapper" :slides-per-group="3" :slides-per-view="3" :space-between="20" :modules="modules" navigation>
         <swiper-slide v-for="(o, index) in list.bili" class="swiper-bili-slide">
           <el-card :body-style="{ padding: '0px' }">
             <img :src=o.pic class="image bili-image" alt=""/>
