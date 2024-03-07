@@ -46,7 +46,7 @@ func NewApp() *App {
 		panic(err)
 	}
 
-	db, err := initDB(cfg.Dir)
+	db, err := initDB(cfg.Dir.BaseDir)
 	if err != nil {
 		panic(err)
 	}
@@ -61,8 +61,8 @@ func NewApp() *App {
 	}
 }
 
-func initDB(dir config.Dir) (*gorm.DB, error) {
-	return gorm.Open(sqlite.Open(fmt.Sprintf("%s%s%s", dir.BaseDir, string(filepath.Separator), "data.db")), &gorm.Config{})
+func initDB(baseDir string) (*gorm.DB, error) {
+	return gorm.Open(sqlite.Open(fmt.Sprintf("%s%s%s", baseDir, string(filepath.Separator), "data.db")), &gorm.Config{})
 }
 
 func corsMiddleware(h http.Handler) http.HandlerFunc {

@@ -11,11 +11,11 @@ import (
 const (
 	CfgFileName = "config.yml"
 
-	Spe = string(filepath.Separator)
+	Sep = string(filepath.Separator)
 )
 
 var defaultCfg = Config{
-	App: App{Name: "poulo-music", Mode: "release", Version: "v0.0.1", FileServerAddr: "http://localhost:51730"},
+	App: App{Name: "Poulo", Mode: "release", Version: "v0.0.1", FileServerAddr: "http://localhost:51730"},
 	Dir: Dir{},
 }
 
@@ -44,7 +44,7 @@ func (d *Dir) makeDirAll() error {
 
 	var dirs = []string{"cache", "log", "data", "tmp"}
 	for _, dir := range dirs {
-		err := os.MkdirAll(d.BaseDir+Spe+dir, os.ModePerm)
+		err := os.MkdirAll(d.BaseDir+Sep+dir, os.ModePerm)
 		if err != nil {
 			return err
 		}
@@ -55,15 +55,15 @@ func (d *Dir) makeDirAll() error {
 // Init 初始化配置
 func Init() (cfg *Config, err error) {
 	dir := getDefaultDir()
-	defaultCfg.Dir = dir
 
-	_, err = os.Stat(dir.ConfigDir + Spe + CfgFileName)
-	if os.IsNotExist(err) { //配置文件不存在,创建默认配置文件
+	_, err = os.Stat(dir.ConfigDir + Sep + CfgFileName) // ~/Library/Preferences/Poulo/config.yml
+	if os.IsNotExist(err) {                             //配置文件不存在,创建默认配置文件
 		err := dir.makeDirAll()
 		if err != nil {
 			return nil, err
 		}
 
+		defaultCfg.Dir = dir
 		err = defaultCfg.save()
 		if err != nil {
 			return nil, err
@@ -81,22 +81,27 @@ func Init() (cfg *Config, err error) {
 }
 
 func getDefaultDir() (dir Dir) {
-	switch runtime.GOOS {
-	case "darwin":
+	// export poulo_mode=debug
+	if os.Getenv("poulo_mode") == "debug" {
 		dir.ConfigDir = "./config"
 		dir.BaseDir = "./dir"
-	case "windows":
-		userRoaming := os.Getenv("APPDATA")       //C:\Users\{UserName}\AppData\Roaming
-		AppDataLocal := os.Getenv("LOCALAPPDATA") //C:\Users\{UserName}\AppData\Local
+		return
+	}
 
-		dir.ConfigDir = userRoaming + "\\BiliMusicify"
-		dir.BaseDir = AppDataLocal + "\\BiliMusicify"
+	switch runtime.GOOS {
+	case "darwin":
+		home := os.Getenv("HOME") ///Users/xxx
+		dir.ConfigDir = home + "/Library/Preferences/Poulo"
+		dir.BaseDir = home + "/Library/Caches/Poulo"
+	case "windows":
+		dir.ConfigDir = os.Getenv("APPDATA") + "\\Poulo"    //C:\Users\{UserName}\AppData\Roaming
+		dir.BaseDir = os.Getenv("LOCALAPPDATA") + "\\Poulo" //C:\Users\{UserName}\AppData\Local
 	}
 	return
 }
 
 func (c *Config) load() error {
-	f, err := os.Open(c.Dir.ConfigDir + Spe + CfgFileName)
+	f, err := os.Open(c.Dir.ConfigDir + Sep + CfgFileName)
 	if err != nil {
 		return err
 	}
@@ -117,7 +122,7 @@ func (c *Config) load() error {
 }
 
 func (c *Config) save() error {
-	f, err := os.Create(c.Dir.ConfigDir + Spe + CfgFileName)
+	f, err := os.Create(c.Dir.ConfigDir + Sep + CfgFileName)
 	if err != nil {
 		return err
 	}
