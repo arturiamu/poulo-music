@@ -1,6 +1,7 @@
 package netease
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
@@ -27,17 +28,17 @@ func NewMigu(log *logrus.Logger) *Migu {
 	return &Migu{log: log}
 }
 
-func (m *Migu) GetSearch(param models.GetSearchParam) (data []models.GetSearchResp, err error) {
+func (m *Migu) GetSearch(ctx context.Context, param models.GetSearchParam) (data []models.GetSearchResp, err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (m *Migu) GetHotContent(param models.GetHotContentParam) (data []models.GetHotContentResp, err error) {
+func (m *Migu) GetHotContent(ctx context.Context, param models.GetHotContentParam) (data []models.GetHotContentResp, err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (m *Migu) GetMusic(param models.GetMusicParam) (data models.Music, err error) {
+func (m *Migu) GetMusic(ctx context.Context, param models.GetMusicParam) (data models.Music, err error) {
 	//TODO implement me
 	panic("implement me")
 }

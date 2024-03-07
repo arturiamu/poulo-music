@@ -1,6 +1,7 @@
 package qq
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
@@ -27,7 +28,7 @@ func NewQQ(log *logrus.Logger) *QQ {
 	return &QQ{log: log}
 }
 
-func (q *QQ) GetSearch(param models.GetSearchParam) (data []models.GetSearchResp, err error) {
+func (q *QQ) GetSearch(ctx context.Context, param models.GetSearchParam) (data []models.GetSearchResp, err error) {
 	qqSearchResp, err := q.search(param.Keyword, param.Pagesize)
 	if err != nil {
 		return
@@ -47,12 +48,12 @@ func (q *QQ) GetSearch(param models.GetSearchParam) (data []models.GetSearchResp
 	return
 }
 
-func (q *QQ) GetHotContent(param models.GetHotContentParam) (data []models.GetHotContentResp, err error) {
+func (q *QQ) GetHotContent(ctx context.Context, param models.GetHotContentParam) (data []models.GetHotContentResp, err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (q *QQ) GetMusic(param models.GetMusicParam) (data models.Music, err error) {
+func (q *QQ) GetMusic(ctx context.Context, param models.GetMusicParam) (data models.Music, err error) {
 	qqPlayInfoResp, err := q.playInfo(param.Identifier)
 	if err != nil {
 		return

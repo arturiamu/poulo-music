@@ -1,9 +1,12 @@
 package platform
 
-import "poulo-music/models"
+import (
+	"context"
+	"poulo-music/models"
+)
 
 type Platform interface {
-	GetSearch(param models.GetSearchParam) (data []models.GetSearchResp, err error)
-	GetHotContent(param models.GetHotContentParam) (data []models.GetHotContentResp, err error)
-	GetMusic(param models.GetMusicParam) (data models.Music, err error)
+	GetSearch(ctx context.Context, param models.GetSearchParam) (data []models.GetSearchResp, err error)
+	GetHotContent(ctx context.Context, param models.GetHotContentParam) (data []models.GetHotContentResp, err error)
+	GetMusic(ctx context.Context, param models.GetMusicParam) (data models.Music, err error)
 }
