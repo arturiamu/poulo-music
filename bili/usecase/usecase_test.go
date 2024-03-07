@@ -114,3 +114,13 @@ func TestUseCase_GetVideoMp4ByUri2(t *testing.T) {
 		return
 	}
 }
+
+func TestUseCase_GetVideoRanking2(t *testing.T) {
+	uc := NewUseCase(new(logrus.Logger), mockDir)
+	videoRankingData, err := uc.GetVideoRanking(context.Background(), true, mockDir.BaseDir+Sep+"cache"+Sep)
+	if err != nil {
+		t.Fatal(err)
+	}
+	dataVO := videoRankingData.ToVO("http://localhost:8080/")
+	fmt.Println((*dataVO))
+}
