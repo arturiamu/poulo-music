@@ -1,0 +1,8 @@
+app:
+    name: Poulo
+    mode: release
+    version: v0.0.1
+    file_server_addr: http://localhost:51730
+dir:
+    config_dir: ./config
+    base_dir: ./dir
