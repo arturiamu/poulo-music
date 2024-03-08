@@ -9,4 +9,5 @@ const (
 	PlatformMigu    Platform = "migu"
 	PlatformNetease Platform = "netease"
 	PlatformQQ      Platform = "qq"
+	PlatformAll     Platform = "all"
 )

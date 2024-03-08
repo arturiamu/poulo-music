@@ -1,11 +1,13 @@
 package models
 
 type GetSearchParam struct {
-	Keyword      string
-	Page         int64
-	Pagesize     int64
-	SaveFile     bool
-	SaveFilePath string
+	Platform   Platform
+	Keyword    string
+	Page       int64
+	Pagesize   int64
+	CachePic   bool
+	CacheMusic bool
+	CacheLrc   bool
 }
 
 // GetSearchResp
@@ -29,6 +31,9 @@ type GetMusicParam struct {
 type GetHotContentParam struct {
 	Platform   Platform
 	Identifier string
+	CachePic   bool
+	CacheMusic bool
+	CacheLrc   bool
 }
 
 type GetHotContentResp struct {

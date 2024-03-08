@@ -2,7 +2,7 @@
 
 import {computed, onMounted, reactive, ref, watch} from "vue";
 import {useStore} from 'vuex'
-// import {GetBiliAudio, GetBiliSearch} from "../../wailsjs/go/main/App.js";
+import {GetSearch} from "../../wailsjs/go/main/App.js";
 import {LogError} from "../../wailsjs/runtime/runtime.js";
 
 const store = useStore()
@@ -16,7 +16,7 @@ let search_load = ref(false);
 const list = ref([])
 
 onMounted(() => {
-  search(page)
+  search()
 })
 
 watch(computed(()=>store.state.keyword), search)
@@ -38,6 +38,7 @@ function getAudio (o){
 }
 
 function search() {
+  GetSearch("bili","123")
   // let keyword = store.state.keyword
   // if (keyword=== "" || search_load.value){
   //   return

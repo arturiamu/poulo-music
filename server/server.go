@@ -70,7 +70,14 @@ func (s *Server) RunServer(ctx context.Context) {
 }
 
 func (s *Server) AggregateSearch(platform models.Platform, param models.GetSearchParam) (data []models.GetSearchResp, err error) {
+	if platform == models.PlatformAll {
+		return s.aggregateSearchAll(platform, param)
+	}
 	return s.platformMap[platform].GetSearch(s.ctx, param)
+}
+
+func (s *Server) aggregateSearchAll(platform models.Platform, param models.GetSearchParam) (data []models.GetSearchResp, err error) {
+	return
 }
 
 func (s *Server) AggregateHotContent(platform models.Platform, param models.GetHotContentParam) (data []models.GetHotContentResp, err error) {
