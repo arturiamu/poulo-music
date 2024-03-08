@@ -11,6 +11,7 @@ import (
 	"poulo-music/httpp"
 	"poulo-music/models"
 	"poulo-music/platform"
+	"strings"
 )
 
 const (
@@ -37,6 +38,7 @@ func NewQQ(log *logrus.Logger, cfg *config.Config) *QQ {
 }
 
 func (q *QQ) GetSearch(ctx context.Context, param models.GetSearchParam) (data []models.GetSearchResp, err error) {
+	param.Keyword = strings.ReplaceAll(param.Keyword, " ", "")
 	qqSearchResp, err := q.search(param.Keyword, param.Pagesize)
 	if err != nil {
 		q.log.Error(err.Error())

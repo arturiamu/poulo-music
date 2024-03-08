@@ -12,7 +12,7 @@ import (
 func TestSearch(t *testing.T) {
 	var client = new(QQ)
 
-	data, err := client.search("烟雨行舟", 10)
+	data, err := client.search("love story", 10)
 	if err != nil {
 		t.Error(err)
 	}
