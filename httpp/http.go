@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 )
 
@@ -77,6 +78,23 @@ func (h *Http) DoDetail() (*http.Response, error) {
 	}
 
 	return http.DefaultClient.Do(req)
+}
+
+func (h *Http) SaveFile(fileName string) error {
+	bytes, err := h.Do()
+	if err != nil {
+		return err
+	}
+
+	file, err := os.Create(fileName)
+	if err != nil {
+		return err
+	}
+
+	defer file.Close()
+
+	_, err = file.Write(bytes)
+	return err
 }
 
 func (h *Http) Do() ([]byte, error) {

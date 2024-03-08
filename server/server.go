@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/sqlite"
@@ -13,7 +14,6 @@ import (
 	"poulo-music/middleware"
 	"poulo-music/models"
 	"poulo-music/platform"
-	"poulo-music/platform/bili"
 	"poulo-music/platform/migu"
 	"poulo-music/platform/qq"
 )
@@ -36,14 +36,14 @@ func NewServer(cfg *config.Config, log *logrus.Logger) (*Server, error) {
 	}
 
 	var cacheDir = cfg.BaseDir + Sep + "cache"
-	biliClient := bili.NewBili(log, cacheDir)
-	qqClient := qq.NewQQ(log, cacheDir)
+	//biliClient := bili.NewBili(log, cacheDir)
+	qqClient := qq.NewQQ(log, cfg)
 	miguClient := migu.NewMigu(log, cacheDir)
 
 	var svr = &Server{
 		cfg: cfg,
 		platformMap: map[models.Platform]platform.Platform{
-			models.PlatformBili: biliClient,
+			//models.PlatformBili: biliClient,
 			models.PlatformQQ:   qqClient,
 			models.PlatformMigu: miguClient,
 		},
@@ -70,6 +70,12 @@ func (s *Server) RunServer(ctx context.Context) {
 }
 
 func (s *Server) AggregateSearch(platform models.Platform, param models.GetSearchParam) (data []models.GetSearchResp, err error) {
+	if _, ok := s.platformMap[platform]; !ok {
+		return nil, errors.New("platform not found")
+	}
+
+	param.Pagesize = 100
+
 	if platform == models.PlatformAll {
 		return s.aggregateSearchAll(platform, param)
 	}
@@ -77,13 +83,25 @@ func (s *Server) AggregateSearch(platform models.Platform, param models.GetSearc
 }
 
 func (s *Server) aggregateSearchAll(platform models.Platform, param models.GetSearchParam) (data []models.GetSearchResp, err error) {
-	return
+	return nil, errors.New("not implemented")
 }
 
 func (s *Server) AggregateHotContent(platform models.Platform, param models.GetHotContentParam) (data []models.GetHotContentResp, err error) {
+	if _, ok := s.platformMap[platform]; !ok {
+		return nil, errors.New("platform not found")
+	}
+
 	return s.platformMap[platform].GetHotContent(s.ctx, param)
 }
 
 func (s *Server) AggregateMusic(platform models.Platform, param models.GetMusicParam) (data models.Music, err error) {
+	if _, ok := s.platformMap[platform]; !ok {
+		return data, errors.New("platform not found")
+	}
+
+	if platform == models.PlatformQQ {
+		param.CacheLrc = true
+	}
+
 	return s.platformMap[platform].GetMusic(s.ctx, param)
 }

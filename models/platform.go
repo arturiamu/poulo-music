@@ -13,7 +13,7 @@ type GetSearchParam struct {
 // GetSearchResp
 // 统一搜索结果
 type GetSearchResp struct {
-	ID         int64    `json:"id"`
+	ID         string   `json:"id"`
 	Platform   Platform `json:"platform"`   // 平台
 	Identifier string   `json:"identifier"` // 平台标识符
 	Title      string   `json:"title"`      // 内容标题
@@ -26,6 +26,9 @@ type GetSearchResp struct {
 type GetMusicParam struct {
 	Platform   Platform
 	Identifier string
+	CachePic   bool
+	CacheMusic bool
+	CacheLrc   bool
 }
 
 type GetHotContentParam struct {

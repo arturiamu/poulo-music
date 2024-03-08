@@ -3,11 +3,18 @@ package qq
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
+	"path/filepath"
+	"poulo-music/config"
 	"poulo-music/httpp"
 	"poulo-music/models"
 	"poulo-music/platform"
+)
+
+const (
+	Sep = string(filepath.Separator)
 )
 
 var _ platform.Platform = (*QQ)(nil)
@@ -21,23 +28,24 @@ var _ platform.Platform = (*QQ)(nil)
 // code	string	返回的状态码
 // msg	string	返回错误提示！
 type QQ struct {
-	log   *logrus.Logger
-	cache string //~/Library/Caches/Poulo/cache
+	log *logrus.Logger
+	cfg *config.Config
 }
 
-func NewQQ(log *logrus.Logger, cache string) *QQ {
-	return &QQ{log: log, cache: cache}
+func NewQQ(log *logrus.Logger, cfg *config.Config) *QQ {
+	return &QQ{log: log, cfg: cfg}
 }
 
 func (q *QQ) GetSearch(ctx context.Context, param models.GetSearchParam) (data []models.GetSearchResp, err error) {
 	qqSearchResp, err := q.search(param.Keyword, param.Pagesize)
 	if err != nil {
+		q.log.Error(err.Error())
 		return
 	}
 
 	for _, v := range qqSearchResp.List {
 		data = append(data, models.GetSearchResp{
-			ID:         v.Id,
+			ID:         cast.ToString(v.Id),
 			Platform:   models.PlatformQQ,
 			Identifier: v.Mid,
 			Title:      v.Name,      //一路向北
@@ -57,6 +65,7 @@ func (q *QQ) GetHotContent(ctx context.Context, param models.GetHotContentParam)
 func (q *QQ) GetMusic(ctx context.Context, param models.GetMusicParam) (data models.Music, err error) {
 	qqPlayInfoResp, err := q.playInfo(param.Identifier)
 	if err != nil {
+		q.log.Error(err.Error())
 		return
 	}
 
@@ -68,6 +77,17 @@ func (q *QQ) GetMusic(ctx context.Context, param models.GetMusicParam) (data mod
 		Url:        qqPlayInfoResp.Url,
 		Cover:      qqPlayInfoResp.Pic,
 		Lrc:        qqPlayInfoResp.Lrcgc,
+	}
+
+	if param.CacheLrc {
+		filename := "qq_" + param.Identifier + ".lrc"
+		path := q.cfg.BaseDir + Sep + "cache" + Sep + filename
+		err = httpp.NewHttp().SetUrl(qqPlayInfoResp.Lrcgc).SaveFile(path)
+		if err != nil {
+			q.log.Error(err.Error())
+			return data, nil
+		}
+		data.Lrc = fmt.Sprintf("http://localhost:%d/%s", q.cfg.FileServerPort, filename)
 	}
 	return
 }
@@ -88,6 +108,7 @@ func (q *QQ) search(keyword string, total int64) (data models.QQSearchResp, err 
 
 	bytes, err := httpp.NewHttp().SetUrl(searchUrl).AddParams(params).Do()
 	if err != nil {
+		q.log.Error(err.Error())
 		return
 	}
 
@@ -106,6 +127,7 @@ func (q *QQ) playInfo(cid string) (data models.QQPlayInfoResp, err error) {
 
 	bytes, err := httpp.NewHttp().SetUrl(searchUrl).AddParams(params).Do()
 	if err != nil {
+		q.log.Error(err.Error())
 		return
 	}
 
@@ -124,6 +146,7 @@ func (q *QQ) lrcgc(cid string) (data models.QQPlayInfoResp, err error) {
 
 	bytes, err := httpp.NewHttp().SetUrl(searchUrl).AddParams(params).Do()
 	if err != nil {
+		q.log.Error(err.Error())
 		return
 	}
 
