@@ -24,9 +24,12 @@ func NewApp() *App {
 		panic(err)
 	}
 
-	return &App{
-		svr: server.NewServer(cfg, log),
+	svr, err := server.NewServer(cfg, log)
+	if err != nil {
+		panic(err)
 	}
+
+	return &App{svr: svr}
 }
 
 // startup is called when the app starts. The context is saved

@@ -25,17 +25,17 @@ type Server struct {
 	cfg         *config.Config
 }
 
-func NewServer(cfg *config.Config, log *logrus.Logger) *Server {
+func NewServer(cfg *config.Config, log *logrus.Logger) (*Server, error) {
 	_, err := initDB(cfg.Dir)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	biliClient := bili.NewBili(log, &cfg.Dir)
 	qqClient := qq.NewQQ(log)
 	miguClient := migu.NewMigu(log)
 
-	return &Server{
+	var svr = &Server{
 		cfg: cfg,
 		platformMap: map[models.Platform]platform.Platform{
 			models.PlatformBili: biliClient,
@@ -43,6 +43,8 @@ func NewServer(cfg *config.Config, log *logrus.Logger) *Server {
 			models.PlatformMigu: miguClient,
 		},
 	}
+
+	return svr, nil
 }
 
 func initDB(dir config.Dir) (*gorm.DB, error) {
