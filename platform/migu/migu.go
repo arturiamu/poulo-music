@@ -1,4 +1,4 @@
-package netease
+package migu
 
 import (
 	"context"

@@ -22,12 +22,10 @@ func main() {
 		Width:         980,
 		Height:        680,
 		DisableResize: true,
-		//Frameless:     true,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
-		BackgroundColour: &options.RGBA{R: 230, G: 80, B: 80, A: 1},
-		OnStartup:        app.startup,
+		OnStartup: app.startup,
 		Bind: []interface{}{
 			app,
 		},

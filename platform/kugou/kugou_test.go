@@ -1,4 +1,4 @@
-package netease
+package kugou
 
 import (
 	"fmt"
