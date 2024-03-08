@@ -1,10 +1,14 @@
 import {useStore} from 'vuex'
 
 const store = useStore()
-function Log() {
+
+function PouloLog(msg) {
+    let now = Date.now()
     const log = {
-        message: "this is a test log",
-        version: "12345",
+        message: msg,
+        version: now.toString(),
     }
-    store.commit('addAudio', log)
+    store.commit('addLog',log)
 }
+
+export default PouloLog

@@ -7,6 +7,7 @@ import (
 )
 
 func TestInitConfig(t *testing.T) {
+	os.Setenv("poulo_mode", "debug")
 	cfg, err := Init()
 	if err != nil {
 		panic(err)

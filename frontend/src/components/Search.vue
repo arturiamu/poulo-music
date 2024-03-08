@@ -2,37 +2,39 @@
 
 import {computed, onMounted, reactive, ref, watch} from "vue";
 import {useStore} from 'vuex'
-import {GetBiliAudio, GetBiliSearch} from "../../wailsjs/go/main/App.js";
-import {LogError} from "../../wailsjs/runtime/runtime.js";
+import {GetSearch,GetMusic} from "../../wailsjs/go/main/App.js";
+import {LogError,LogDebug} from "../../wailsjs/runtime/runtime.js";
 
 const store = useStore()
 
-const audio_load = reactive({})
+let search_item_load = reactive({})
 
 let page = ref(1)
 
 let search_load = ref(false);
 
+// { "id": "5105986", "platform": "qq", "identifier": "001xd0HI0X9GNq", "title": "一路向北", "name": "周杰伦", "describe": "J III MP3 Player", "type": "", "cover": "https://y.gtimg.cn/music/photo_new/T002R300x300M000002MAeob3zLXwZ.jpg" }
 const list = ref([])
 
 onMounted(() => {
-  search(page)
+  search()
 })
 
 watch(computed(()=>store.state.keyword), search)
 
-function getAudio (o){
-  audio_load[o.bvid]=true
-  GetBiliAudio(o.bvid).then(result => {
+function getMisic (o){
+  search_item_load[o.identifier]=true
+  GetMusic(o.platform,o.identifier).then(result => {
     if (result.code===200){
+      search_item_load[o.identifier]=false
+      LogDebug(JSON.stringify(result.data))
       store.commit('setAudio',result.data)
-      audio_load[o.bvid]=false
     }else{
-      audio_load[o.bvid]=false
+      search_item_load[o.identifier]=false
       LogError(result.message)
     }
   }).catch(err => {
-    audio_load[o.bvid]=false
+    search_item_load[o.identifier]=false
     LogError(err)
   })
 }
@@ -43,17 +45,18 @@ function search() {
     return
   }
   search_load.value = true
-  GetBiliSearch(keyword,page.value).then(result => {
+
+  GetSearch("qq",keyword).then(result => {
     if (result.code===200){
+      search_load.value = false
       list.value=result.data
-      search_load.value = false
     }else{
-      LogError(result.message)
       search_load.value = false
+      LogError(result.message)
     }
   }).catch(err => {
-    LogError(err)
     search_load.value = false
+    LogError(err)
   })
 }
 
@@ -64,13 +67,8 @@ function search() {
   <div id="content" style="margin-top:15px;padding: 30px 40px 0 40px" v-loading="search_load">
     <el-row :gutter="20">
       <el-col :span="8" v-for="(o, index) in list" :key="o" style="">
-        <el-card :body-style="{ padding: '0px' }" @click="getAudio(o)" v-loading="audio_load[o.bvid]">
-          <img :src=o.pic rel="external nofollow" class="image" alt=""/>
-          <div style="background-color: rgba(84,73,73,0.27);transform: translate(0, -18px);">
-            <span style="font-size: 12px;color: #ffffff">{{o.view}}</span>
-            <span style="font-size: 12px;color: #ffffff;margin-left: 5px">{{o.reply}}</span>
-            <span style="font-size: 12px;color: #ffffff;margin-left: 5px">{{o.like}}</span>
-          </div>
+        <el-card :body-style="{ padding: '0px' }" @click="getMisic(o)" v-loading="search_item_load[o.identifier]">
+          <img :src=o.cover rel="external nofollow" class="image" alt=""/>
           <div style="height: 18px;transform: translate(0, -18px);">
             <span style="font-size: 12px;font-weight: bold">{{o.title}}</span>
           </div>

@@ -20,6 +20,6 @@ func Init(baseDir string) (*logrus.Logger, error) {
 
 	log := logrus.New()
 	log.SetOutput(mw)
-
+	log.SetReportCaller(true)
 	return log, nil
 }

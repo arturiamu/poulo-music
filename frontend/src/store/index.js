@@ -18,7 +18,7 @@ const store = createStore({
         setAudio (state,audio) {
             state.audio = audio
         },
-        addAudio (state,log) {
+        addLog (state,log) {
             state.log = log
         },
         removeLog (state,version) {

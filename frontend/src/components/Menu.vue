@@ -3,7 +3,7 @@ import {useStore} from 'vuex'
 import {onMounted, watch,ref, computed} from "vue";
 import {useRouter} from 'vue-router'
 import {Fire,Like,Tool,MusicList,Music,List,Entertainment,History,Creative,RecordDisc} from "@icon-park/vue-next";
-
+import {LogError} from "../../wailsjs/runtime/runtime.js";
 
 let store = useStore()
 
@@ -30,7 +30,6 @@ const menus = [
       {name:"i_like",icon:Like,router:"/play_list/i_like",label:"我喜欢"},
       {name:"test_list",icon:List,router:"/play_list/test",label:"测试列表"}]},
   {name:"",label:"系统",children:[
-      {name:"setting",icon:Tool,router:"/setting",label:"系统设置"},
       {name:"setting",icon:Tool,router:"/setting",label:"系统设置"}]},
 ]
 
@@ -47,6 +46,7 @@ function clearMenuStyle(){
 }
 
 function chooseMenu(x) {
+  LogError(x)
   clearMenuStyle()
   router.push({
     path:x.router

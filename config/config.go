@@ -15,36 +15,30 @@ const (
 )
 
 var defaultCfg = Config{
-	App: App{Name: "Poulo", Mode: "release", Version: "v0.0.1", FileServerAddr: "http://localhost:51730"},
-	Dir: Dir{},
-}
-
-type App struct {
-	Name           string `json:"name" yaml:"name"`
-	Mode           string `json:"mode" yaml:"mode"`
-	Version        string `json:"version" yaml:"version"`
-	FileServerAddr string `json:"file_server_addr" yaml:"file_server_addr"`
-}
-
-type Dir struct {
-	ConfigDir string `json:"config_dir" yaml:"config_dir"`
-	BaseDir   string `json:"base_dir" yaml:"base_dir"`
+	Name:           "Poulo",
+	Mode:           "release",
+	Version:        "v0.0.1",
+	FileServerPort: 51730,
 }
 
 type Config struct {
-	App App `json:"app" yaml:"app"`
-	Dir Dir `json:"dir" yaml:"dir"`
+	Name           string `json:"name" yaml:"name"`
+	Mode           string `json:"mode" yaml:"mode"`
+	Version        string `json:"version" yaml:"version"`
+	ConfigPath     string `json:"config_path" yaml:"config_path"`
+	BaseDir        string `json:"base_dir" yaml:"base_dir"`
+	FileServerPort int    `json:"file_server_port" yaml:"file_server_port"`
 }
 
-func (d *Dir) makeDirAll() error {
-	err := os.MkdirAll(d.ConfigDir, os.ModePerm)
+func (c *Config) makeDirAll() error {
+	err := os.MkdirAll(c.ConfigPath, os.ModePerm)
 	if err != nil {
 		return err
 	}
 
 	var dirs = []string{"cache", "log", "data", "tmp"}
 	for _, dir := range dirs {
-		err := os.MkdirAll(d.BaseDir+Sep+dir, os.ModePerm)
+		err := os.MkdirAll(c.BaseDir+Sep+dir, os.ModePerm)
 		if err != nil {
 			return err
 		}
@@ -54,10 +48,10 @@ func (d *Dir) makeDirAll() error {
 
 // Init 初始化配置
 func Init() (cfg *Config, err error) {
-	defaultCfg.Dir = getDefaultDir()
-	_, err = os.Stat(defaultCfg.Dir.ConfigDir + Sep + CfgFileName) // ~/Library/Preferences/Poulo/config.yml
-	if os.IsNotExist(err) {                                        //配置文件不存在,创建默认配置文件
-		err := defaultCfg.Dir.makeDirAll()
+	defaultCfg.loadPath()
+	_, err = os.Stat(defaultCfg.ConfigPath + Sep + CfgFileName) // ~/Library/Preferences/Poulo/config.yml
+	if os.IsNotExist(err) {                                     //配置文件不存在,创建默认配置文件
+		err := defaultCfg.makeDirAll()
 		if err != nil {
 			return nil, err
 		}
@@ -78,28 +72,28 @@ func Init() (cfg *Config, err error) {
 	return &defaultCfg, nil
 }
 
-func getDefaultDir() (dir Dir) {
+func (c *Config) loadPath() {
 	// export poulo_mode=debug
 	if os.Getenv("poulo_mode") == "debug" {
-		dir.ConfigDir = "./config"
-		dir.BaseDir = "./dir"
+		c.Mode = "debug"
+		c.ConfigPath = "./config"
+		c.BaseDir = "./dir"
 		return
 	}
 
 	switch runtime.GOOS {
 	case "darwin":
-		home := os.Getenv("HOME") ///Users/{UserName}
-		dir.ConfigDir = home + "/Library/Preferences/Poulo"
-		dir.BaseDir = home + "/Library/Caches/Poulo"
+		c.ConfigPath = "~/Library/Preferences/Poulo"
+		c.BaseDir = "~/Library/Caches/Poulo"
 	case "windows":
-		dir.ConfigDir = os.Getenv("APPDATA") + "\\Poulo"    //C:\Users\{UserName}\AppData\Roaming
-		dir.BaseDir = os.Getenv("LOCALAPPDATA") + "\\Poulo" //C:\Users\{UserName}\AppData\Local
+		c.ConfigPath = os.Getenv("APPDATA") + "\\Poulo"   //C:\Users\{UserName}\AppData\Roaming
+		c.BaseDir = os.Getenv("LOCALAPPDATA") + "\\Poulo" //C:\Users\{UserName}\AppData\Local
 	}
 	return
 }
 
 func (c *Config) load() error {
-	f, err := os.Open(c.Dir.ConfigDir + Sep + CfgFileName)
+	f, err := os.Open(c.ConfigPath + Sep + CfgFileName)
 	if err != nil {
 		return err
 	}
@@ -120,7 +114,7 @@ func (c *Config) load() error {
 }
 
 func (c *Config) save() error {
-	f, err := os.Create(c.Dir.ConfigDir + Sep + CfgFileName)
+	f, err := os.Create(c.ConfigPath + Sep + CfgFileName)
 	if err != nil {
 		return err
 	}
