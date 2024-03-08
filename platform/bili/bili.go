@@ -8,8 +8,6 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"poulo-music/bili"
-	"poulo-music/config"
 	"poulo-music/httpp"
 	"poulo-music/models"
 	"poulo-music/platform"
@@ -24,12 +22,12 @@ const (
 var _ platform.Platform = (*Bili)(nil)
 
 type Bili struct {
-	log *logrus.Logger
-	dir *config.Dir
+	log   *logrus.Logger
+	cache string //~/Library/Caches/Poulo/cache
 }
 
-func NewBili(log *logrus.Logger, dir *config.Dir) *Bili {
-	return &Bili{log: log, dir: dir}
+func NewBili(log *logrus.Logger, cache string) *Bili {
+	return &Bili{log: log, cache: cache}
 }
 
 func (b *Bili) GetSearch(ctx context.Context, param models.GetSearchParam) (data []models.GetSearchResp, err error) {
@@ -47,28 +45,24 @@ func (b *Bili) GetMusic(ctx context.Context, param models.GetMusicParam) (data m
 	panic("implement me")
 }
 
-func NewUseCase(log *logrus.Logger, dir *config.Dir) *Bili {
-	return &Bili{log: log, dir: dir}
-}
-
 func (b *Bili) getErr(code int) error {
 	switch code {
 	case 0:
 		return nil
 	case -400:
-		return bili.ErrRequestIsIncorrect
+		return ErrRequestIsIncorrect
 	case -403:
-		return bili.ErrInsufficientPermissions
+		return ErrInsufficientPermissions
 	case -404:
-		return bili.ErrNoVideo
+		return ErrNoVideo
 	case -412:
-		return bili.ErrSearchBlocked
+		return ErrSearchBlocked
 	case 62002:
-		return bili.ErrManuscriptIsNotVisible
+		return ErrManuscriptIsNotVisible
 	case 62004:
-		return bili.ErrManuscriptIsUnderReview
+		return ErrManuscriptIsUnderReview
 	default:
-		return bili.ErrUnknownError
+		return ErrUnknownError
 	}
 }
 
@@ -93,7 +87,7 @@ func (b *Bili) GetVideoViewByAid(ctx context.Context, aid int) (*models.VideoVie
 // json回复：见 models
 func (b *Bili) getVideoViewByBvidOrAid(ctx context.Context, bvid string, aid int) (*models.VideoViewData, error) {
 	if bvid == "" && aid == 0 {
-		return nil, bili.ErrInvalidParameter
+		return nil, ErrInvalidParameter
 	}
 
 	var _url = "https://api.bilibili.com/x/web-interface/view"
@@ -151,7 +145,7 @@ func (b *Bili) GetVideoViewDetailByAid(ctx context.Context, aid int) (*models.Vi
 // data	obj	信息本体
 func (b *Bili) getVideoViewDetailByBvidOrAid(ctx context.Context, bvid string, aid int) (*models.VideoViewDetailData, error) {
 	if bvid == "" && aid == 0 {
-		return nil, bili.ErrInvalidParameter
+		return nil, ErrInvalidParameter
 	}
 
 	var _url = "https://api.bilibili.com/x/web-interface/view/detail"
@@ -206,7 +200,7 @@ func (b *Bili) GetVideoMp4ByBvid(ctx context.Context, bvid string, filename stri
 	}
 
 	if len(videoPlayerWbiPlayUrl.Durl) == 0 {
-		return bili.ErrNoMp4Video
+		return ErrNoMp4Video
 	}
 	return b.SaveFile(videoPlayerWbiPlayUrl.Durl[0].Url, filename)
 }
@@ -214,7 +208,7 @@ func (b *Bili) GetVideoMp4ByBvid(ctx context.Context, bvid string, filename stri
 func (b *Bili) GetVideoPlayerWbiPlayUrl(ctx context.Context, bvid string, cid int) (*models.VideoPlayerWbiPlayUrlData, error) {
 
 	if bvid == "" || cid == 0 {
-		return nil, bili.ErrInvalidParameter
+		return nil, ErrInvalidParameter
 	}
 
 	var _url = "https://api.bilibili.com/x/player/playurl"

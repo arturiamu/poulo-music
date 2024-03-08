@@ -21,11 +21,12 @@ var _ platform.Platform = (*QQ)(nil)
 // code	string	返回的状态码
 // msg	string	返回错误提示！
 type QQ struct {
-	log *logrus.Logger
+	log   *logrus.Logger
+	cache string //~/Library/Caches/Poulo/cache
 }
 
-func NewQQ(log *logrus.Logger) *QQ {
-	return &QQ{log: log}
+func NewQQ(log *logrus.Logger, cache string) *QQ {
+	return &QQ{log: log, cache: cache}
 }
 
 func (q *QQ) GetSearch(ctx context.Context, param models.GetSearchParam) (data []models.GetSearchResp, err error) {

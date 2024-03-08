@@ -18,6 +18,10 @@ import (
 	"poulo-music/platform/qq"
 )
 
+const (
+	Sep = string(filepath.Separator)
+)
+
 type Server struct {
 	platformMap map[models.Platform]platform.Platform
 	codec       codec.UseCase
@@ -26,14 +30,15 @@ type Server struct {
 }
 
 func NewServer(cfg *config.Config, log *logrus.Logger) (*Server, error) {
-	_, err := initDB(cfg.Dir)
+	_, err := initDB(cfg.BaseDir + Sep + "data")
 	if err != nil {
 		return nil, err
 	}
 
-	biliClient := bili.NewBili(log, &cfg.Dir)
-	qqClient := qq.NewQQ(log)
-	miguClient := migu.NewMigu(log)
+	var cacheDir = cfg.BaseDir + Sep + "cache"
+	biliClient := bili.NewBili(log, cacheDir)
+	qqClient := qq.NewQQ(log, cacheDir)
+	miguClient := migu.NewMigu(log, cacheDir)
 
 	var svr = &Server{
 		cfg: cfg,
@@ -47,22 +52,21 @@ func NewServer(cfg *config.Config, log *logrus.Logger) (*Server, error) {
 	return svr, nil
 }
 
-func initDB(dir config.Dir) (*gorm.DB, error) {
-	return gorm.Open(sqlite.Open(fmt.Sprintf("%s%s%s", dir.BaseDir, string(filepath.Separator), "data.db")), &gorm.Config{})
-}
-
-func (s *Server) SetContext(ctx context.Context) {
-	s.ctx = ctx
+func initDB(dataPath string) (*gorm.DB, error) {
+	return gorm.Open(sqlite.Open(fmt.Sprintf("%s%s%s", dataPath, string(filepath.Separator), "data.db")), &gorm.Config{})
 }
 
 func (s *Server) RunServer(ctx context.Context) {
 	s.ctx = ctx
 
-	fs := http.FileServer(http.Dir(s.cfg.Dir.BaseDir + string(filepath.Separator) + "cache"))
+	fs := http.FileServer(http.Dir(s.cfg.BaseDir + Sep + "cache"))
 
 	http.Handle("/", middleware.CORS(fs))
 
-	http.ListenAndServe(":51730", nil)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", s.cfg.FileServerPort), nil)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (s *Server) AggregateSearch(platform models.Platform, param models.GetSearchParam) (data []models.GetSearchResp, err error) {

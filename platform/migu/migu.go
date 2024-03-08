@@ -21,11 +21,12 @@ var _ platform.Platform = (*Migu)(nil)
 // code	string	返回的状态码
 // msg	string	返回错误提示！
 type Migu struct {
-	log *logrus.Logger
+	log   *logrus.Logger
+	cache string //~/Library/Caches/Poulo/cache
 }
 
-func NewMigu(log *logrus.Logger) *Migu {
-	return &Migu{log: log}
+func NewMigu(log *logrus.Logger, cache string) *Migu {
+	return &Migu{log: log, cache: cache}
 }
 
 func (m *Migu) GetSearch(ctx context.Context, param models.GetSearchParam) (data []models.GetSearchResp, err error) {

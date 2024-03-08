@@ -1,7 +1,7 @@
 <script setup>
 import {onMounted, reactive,ref} from 'vue';
 import {useStore} from 'vuex'
-import {GetBiliAudio, GetBiliMusicRanking} from "../../wailsjs/go/main/App.js";
+// import {GetBiliAudio, GetBiliMusicRanking} from "../../wailsjs/go/main/App.js";
 import {LogError} from "../../wailsjs/runtime/runtime.js";
 
 import {Swiper, SwiperSlide} from 'swiper/vue';
@@ -27,19 +27,19 @@ const list = reactive({
 })
 
 function getAudio(o) {
-  audio_load[o.bvid] = true
-  GetBiliAudio(o.bvid).then(result => {
-    if (result.code === 200) {
-      store.commit('setAudio', result.data)
-      audio_load[o.bvid] = false
-    } else {
-      audio_load[o.bvid] = false
-      LogError(result.message)
-    }
-  }).catch(err => {
-    audio_load[o.bvid] = false
-    LogError(err)
-  })
+  // audio_load[o.bvid] = true
+  // GetBiliAudio(o.bvid).then(result => {
+  //   if (result.code === 200) {
+  //     store.commit('setAudio', result.data)
+  //     audio_load[o.bvid] = false
+  //   } else {
+  //     audio_load[o.bvid] = false
+  //     LogError(result.message)
+  //   }
+  // }).catch(err => {
+  //   audio_load[o.bvid] = false
+  //   LogError(err)
+  // })
 }
 
 onMounted(() => {
@@ -47,18 +47,18 @@ onMounted(() => {
 })
 
 function getRankingData() {
-  GetBiliMusicRanking().then(result => {
-    if (result.code === 200) {
-      list.bili = result.data.slice(0, 10)
-      list.kugou = result.data.slice(10, 20)
-      list.qq = result.data.slice(20, 30)
-      list.netease = result.data.slice(30, 40)
-    } else {
-      LogError(result.message)
-    }
-  }).catch(err => {
-    LogError(err)
-  })
+  // GetBiliMusicRanking().then(result => {
+  //   if (result.code === 200) {
+  //     list.bili = result.data.slice(0, 10)
+  //     list.kugou = result.data.slice(10, 20)
+  //     list.qq = result.data.slice(20, 30)
+  //     list.netease = result.data.slice(30, 40)
+  //   } else {
+  //     LogError(result.message)
+  //   }
+  // }).catch(err => {
+  //   LogError(err)
+  // })
 }
 
 </script>

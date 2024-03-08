@@ -19,7 +19,7 @@ func NewApp() *App {
 		panic(err)
 	}
 
-	log, err := logger.Init(cfg.Dir.BaseDir)
+	log, err := logger.Init(cfg.BaseDir)
 	if err != nil {
 		panic(err)
 	}

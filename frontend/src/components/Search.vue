@@ -2,7 +2,7 @@
 
 import {computed, onMounted, reactive, ref, watch} from "vue";
 import {useStore} from 'vuex'
-import {GetBiliAudio, GetBiliSearch} from "../../wailsjs/go/main/App.js";
+// import {GetBiliAudio, GetBiliSearch} from "../../wailsjs/go/main/App.js";
 import {LogError} from "../../wailsjs/runtime/runtime.js";
 
 const store = useStore()
@@ -22,39 +22,39 @@ onMounted(() => {
 watch(computed(()=>store.state.keyword), search)
 
 function getAudio (o){
-  audio_load[o.bvid]=true
-  GetBiliAudio(o.bvid).then(result => {
-    if (result.code===200){
-      store.commit('setAudio',result.data)
-      audio_load[o.bvid]=false
-    }else{
-      audio_load[o.bvid]=false
-      LogError(result.message)
-    }
-  }).catch(err => {
-    audio_load[o.bvid]=false
-    LogError(err)
-  })
+  // audio_load[o.bvid]=true
+  // GetBiliAudio(o.bvid).then(result => {
+  //   if (result.code===200){
+  //     store.commit('setAudio',result.data)
+  //     audio_load[o.bvid]=false
+  //   }else{
+  //     audio_load[o.bvid]=false
+  //     LogError(result.message)
+  //   }
+  // }).catch(err => {
+  //   audio_load[o.bvid]=false
+  //   LogError(err)
+  // })
 }
 
 function search() {
-  let keyword = store.state.keyword
-  if (keyword=== "" || search_load.value){
-    return
-  }
-  search_load.value = true
-  GetBiliSearch(keyword,page.value).then(result => {
-    if (result.code===200){
-      list.value=result.data
-      search_load.value = false
-    }else{
-      LogError(result.message)
-      search_load.value = false
-    }
-  }).catch(err => {
-    LogError(err)
-    search_load.value = false
-  })
+  // let keyword = store.state.keyword
+  // if (keyword=== "" || search_load.value){
+  //   return
+  // }
+  // search_load.value = true
+  // GetBiliSearch(keyword,page.value).then(result => {
+  //   if (result.code===200){
+  //     list.value=result.data
+  //     search_load.value = false
+  //   }else{
+  //     LogError(result.message)
+  //     search_load.value = false
+  //   }
+  // }).catch(err => {
+  //   LogError(err)
+  //   search_load.value = false
+  // })
 }
 
 </script>
