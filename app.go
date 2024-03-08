@@ -43,7 +43,8 @@ func (a *App) startup(ctx context.Context) {
 
 func (a *App) GetSearch(platform models.Platform, keyword string) (vo models.VO) {
 	a.log.Infof("GetSearch platform: %v, keyword: %v", platform, keyword)
-	data, err := a.svr.AggregateSearch(platform, models.GetSearchParam{Platform: platform, Keyword: keyword})
+	var param = models.GetSearchParam{Platform: platform, Keyword: keyword}
+	data, err := a.svr.AggregateSearch(platform, param)
 	if err != nil {
 		return vo.Fail(err.Error())
 	}
@@ -52,7 +53,8 @@ func (a *App) GetSearch(platform models.Platform, keyword string) (vo models.VO)
 
 func (a *App) GetHotContent(platform models.Platform) (vo models.VO) {
 	a.log.Infof("GetHotContent platform: %v", platform)
-	data, err := a.svr.AggregateHotContent(platform, models.GetHotContentParam{Platform: platform})
+	var param = models.GetHotContentParam{Platform: platform}
+	data, err := a.svr.AggregateHotContent(platform, param)
 	if err != nil {
 		return vo.Fail(err.Error())
 	}
@@ -61,7 +63,8 @@ func (a *App) GetHotContent(platform models.Platform) (vo models.VO) {
 
 func (a *App) GetMusic(platform models.Platform, identifier string) (vo models.VO) {
 	a.log.Infof("GetMusic platform: %v,identifier: %v", platform, identifier)
-	data, err := a.svr.AggregateMusic(platform, models.GetMusicParam{Platform: platform, Identifier: identifier})
+	var param = models.GetMusicParam{Platform: platform, Identifier: identifier}
+	data, err := a.svr.AggregateMusic(platform, param)
 	if err != nil {
 		return vo.Fail(err.Error())
 	}
