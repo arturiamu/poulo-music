@@ -63,28 +63,46 @@ function search() {
 </script>
 
 <template>
-<div>
-  <div id="content" style="margin-top:15px;padding: 30px 40px 0 40px" v-loading="search_load">
-    <el-row :gutter="20">
-      <el-col :span="8" v-for="(o, index) in list" :key="o" style="">
-        <el-card :body-style="{ padding: '0px' }" @click="getMisic(o)" v-loading="search_item_load[o.identifier]">
-          <img :src=o.cover rel="external nofollow" class="image" alt=""/>
-          <div style="height: 18px;transform: translate(0, -18px);">
-            <span style="font-size: 12px;font-weight: bold">{{o.title}}</span>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+  <div id="search" style="padding: 0 40px" v-loading="search_load">
+    <div style="margin-top:15px;color: #272727;font-size: 18px;font-weight: bold">
+      歌曲 >
+    </div>
+    <div id="content" style="margin-top:15px">
+      <el-row :gutter="24">
+        <el-col :span="12" v-for="(o, index) in list" :key="o">
+          <el-card :body-style="{ padding: '0px' }" v-loading="search_item_load[o.identifier]"
+                   style="height: 60px;border: none;" shadow="never" border="false" class="music-card">
+            <div style="border-top:1px solid #e6e6e6"></div>
+            <div class="music-area" style="width: 40px;height: 40px">
+              <img class="music-image" :src=o.cover rel="external nofollow" alt="" @click="getMisic(o)"
+                   style="width: 40px;height: 40px;border-radius: 5px"/>
+            </div>
+            <div class="music-area">
+              <div style="padding-left: 10px">
+                <span style="font-size: 12px">{{o.title}} - {{o.name}}</span>
+              </div>
+              <div style="padding-left: 10px">
+                <span style="font-size: 12px;color: #808080">{{o.describe}}</span>
+              </div>
+              <div></div>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
   </div>
-</div>
 </template>
 
 <style scoped>
 
-.image {
-  width: 100%;
-  height: 145px;
-  display: block;
+.music-card:hover {
+
 }
 
+.music-area{
+  display: inline-block;
+  vertical-align: middle;
+  padding-top: 10px;
+  padding-left: 5px;
+}
 </style>

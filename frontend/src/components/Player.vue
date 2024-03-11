@@ -12,6 +12,7 @@ let store = useStore()
 function audioChange(){
   aplayer.value.clearList()
   aplayer.value.addList(store.state.audio)
+  aplayer.value.play()
 }
 
 watch(computed(()=>store.state.audio), audioChange)
@@ -24,7 +25,7 @@ onMounted(() => {
 
 <template>
   <div id="aplayer">
-    <APlayer theme="#FE668E" ref="aplayer" style="margin: 0;padding: 0" :audio="audio"/>
+    <APlayer theme="#FE668E" ref="aplayer" style="margin: 0;padding: 0" :audio="audio" :autoplay="false"/>
   </div>
 </template>
 

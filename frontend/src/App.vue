@@ -4,8 +4,10 @@ import Player from './components/Player.vue'
 import { RouterView } from 'vue-router'
 import {useRouter} from 'vue-router'
 import {onMounted} from "vue";
+import {useStore} from "vuex";
 
 const router = useRouter()
+const store = useStore()
 
 onMounted(() => {
   router.push({
@@ -24,7 +26,11 @@ onMounted(() => {
       <div id="player-main">
         <Player/>
       </div>
-      <div id="vacuum"></div>
+      <div id="vacuum">
+        <div style="color: #c9c9c9;padding-left: 40px;padding-top:10px;font-size: 13px" v-show="router.currentRoute.value.name === 'search'">
+          正在显示<span style="color: #323232">"{{store.state.keyword}}"</span>的搜索结果
+        </div>
+      </div>
       <div id="router-view-main">
         <RouterView v-slot="{ Component }">
           <KeepAlive>
@@ -38,6 +44,11 @@ onMounted(() => {
 
 
 <style>
+
+html, body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 body {
   padding: 0;
   margin: 0;
@@ -71,7 +82,7 @@ body {
 #vacuum{
   height: 35px;
   width:780px;
-  background-color: rgba(255, 255, 255, 0.80);
+  background-color: rgba(255, 255, 255, 0.95);
   position: relative;
   z-index: 2;
   backdrop-filter: blur(5px);
