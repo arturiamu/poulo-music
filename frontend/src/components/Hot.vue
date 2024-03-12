@@ -66,61 +66,63 @@ function getRankingData() {
 
 <template>
   <div id="hot" style="padding: 30px 40px">
-    <div style="font-size: 35px;color: #272727">热门音乐</div>
-    <div class="platform" style="font-size: 18px;color: #272727">哔哩哔哩</div>
-    <div class="swiper swiper-bili">
-      <swiper class="swiper-wrapper" :modules="modules" :slides-per-group="3" :slides-per-view="3" :space-between="20" navigation>
-        <swiper-slide v-for="(o, index) in list.bili" :key="index" class="swiper-bili-slide">
-          <el-card :body-style="{ padding: '0px' }">
-            <img :src=o.cover class="image bili-image" alt=""/>
-            <div style="height: 18px;width:253px;">
-              <span style="font-size: 12px;font-weight: bold;width:253px;white-space: normal;">{{ o.title }}</span>
-            </div>
-          </el-card>
-        </swiper-slide>
-      </swiper>
-    </div>
+    <div style="font-size: 32px;color: #272727;font-weight: bold">热门音乐</div>
+    <div style="margin-top: 25px">
+      <div style="font-size: 18px;font-weight: bold;">哔哩哔哩</div>
+      <div class="swiper swiper-bili">
+        <swiper class="swiper-wrapper" :modules="modules" :slides-per-group="3" :slides-per-view="3" :space-between="20" navigation>
+          <swiper-slide v-for="(o, index) in list.bili" :key="index" class="swiper-bili-slide">
+            <el-card :body-style="{ padding: '0px' }">
+              <img :src=o.cover class="image bili-image" alt=""/>
+              <div style="height: 18px;width:253px;">
+                <span style="font-size: 12px;font-weight: bold;width:253px;white-space: normal;">{{ o.title }}</span>
+              </div>
+            </el-card>
+          </swiper-slide>
+        </swiper>
+      </div>
 
-    <div class="platform" style="font-size: 18px;color: #272727">酷狗音乐</div>
-    <div class="swiper swiper-kugou">
-      <swiper class="swiper-wrapper" :modules="modules"  :slides-per-group="3" :slides-per-view="3" :space-between="20" navigation>
-        <swiper-slide v-for="(o, index) in list.kugou" class="swiper-kugou" >
-          <el-card :body-style="{ padding: '0px' }">
-            <img :src=o.cover class="image kugou-image" alt=""/>
-            <div style="height: 18px;width:253px;">
-              <span style="font-size: 12px;font-weight: bold;width:253px;white-space: normal;">{{o.title}}</span>
-            </div>
-          </el-card>
-        </swiper-slide>
-      </swiper>
-    </div>
+      <div class="platform">酷狗音乐</div>
+      <div class="swiper swiper-kugou">
+        <swiper class="swiper-wrapper" :modules="modules"  :slides-per-group="3" :slides-per-view="3" :space-between="20" navigation>
+          <swiper-slide v-for="(o, index) in list.kugou" class="swiper-kugou" >
+            <el-card :body-style="{ padding: '0px' }">
+              <img :src=o.cover class="image kugou-image" alt=""/>
+              <div style="height: 18px;width:253px;">
+                <span style="font-size: 12px;font-weight: bold;width:253px;white-space: normal;">{{o.title}}</span>
+              </div>
+            </el-card>
+          </swiper-slide>
+        </swiper>
+      </div>
 
-    <div class="platform" style="font-size: 18px;color: #272727">QQ音乐</div>
-    <div class="swiper swiper-qq">
-      <swiper class="swiper-wrapper" :modules="modules"  :slides-per-group="3" :slides-per-view="3" :space-between="20" navigation>
-        <swiper-slide v-for="(o, index) in list.qq" class="swiper-kugou">
-          <el-card :body-style="{ padding: '0px' }">
-            <img :src=o.cover class="image kugou-image" alt=""/>
-            <div style="height: 18px;width:253px;">
-              <span style="font-size: 12px;font-weight: bold;width:253px;white-space: normal;">{{o.title}}</span>
-            </div>
-          </el-card>
-        </swiper-slide>
-      </swiper>
-    </div>
+      <div class="platform">QQ音乐</div>
+      <div class="swiper swiper-qq">
+        <swiper class="swiper-wrapper" :modules="modules"  :slides-per-group="3" :slides-per-view="3" :space-between="20" navigation>
+          <swiper-slide v-for="(o, index) in list.qq" class="swiper-kugou">
+            <el-card :body-style="{ padding: '0px' }">
+              <img :src=o.cover class="image kugou-image" alt=""/>
+              <div style="height: 18px;width:253px;">
+                <span style="font-size: 12px;font-weight: bold;width:253px;white-space: normal;">{{o.title}}</span>
+              </div>
+            </el-card>
+          </swiper-slide>
+        </swiper>
+      </div>
 
-    <div class="platform" style="font-size: 18px;color: #272727">网易云音乐</div>
-    <div class="swiper swiper-cloud">
-      <swiper class="swiper-wrapper" :modules="modules"  :slides-per-group="3" :slides-per-view="3" :space-between="20" navigation>
-        <swiper-slide v-for="(o, index) in list.netease" class="swiper-cloud-slide">
-          <el-card :body-style="{ padding: '0px' }">
-            <img :src=o.cover class="image cloud-image" alt=""/>
-            <div style="height: 18px;width:253px;">
-              <span style="font-size: 12px;font-weight: bold;width:253px;white-space: normal;">{{o.title}}</span>
-            </div>
-          </el-card>
-        </swiper-slide>
-      </swiper>
+      <div class="platform">网易云音乐</div>
+      <div class="swiper swiper-cloud">
+        <swiper class="swiper-wrapper" :modules="modules"  :slides-per-group="3" :slides-per-view="3" :space-between="20" navigation>
+          <swiper-slide v-for="(o, index) in list.netease" class="swiper-cloud-slide">
+            <el-card :body-style="{ padding: '0px' }">
+              <img :src=o.cover class="image cloud-image" alt=""/>
+              <div style="height: 18px;width:253px;">
+                <span style="font-size: 12px;font-weight: bold;width:253px;white-space: normal;">{{o.title}}</span>
+              </div>
+            </el-card>
+          </swiper-slide>
+        </swiper>
+      </div>
     </div>
   </div>
 </template>
@@ -133,11 +135,14 @@ function getRankingData() {
 }
 
 .platform {
-  margin-top: 20px;
+  margin-top: 60px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #272727
 }
 
-.swiper-container {
-  margin-top: 12px;
+.swiper {
+  margin-top: 10px;
 }
 
 </style>
