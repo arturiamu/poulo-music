@@ -1,7 +1,7 @@
 <script setup>
 import {onMounted, reactive,ref} from 'vue';
 import {useStore} from 'vuex'
-// import {GetBiliAudio, GetBiliMusicRanking} from "../../wailsjs/go/main/App.js";
+import {GetHotContent} from "../../wailsjs/go/main/App.js";
 import {LogError} from "../../wailsjs/runtime/runtime.js";
 
 import {Swiper, SwiperSlide} from 'swiper/vue';
@@ -20,6 +20,7 @@ let store = useStore()
 let audio_load = reactive({})
 
 const list = reactive({
+  //{ID: Platform:bili Identifier:BV1YK421x7Ue Title:上头！小时候听这首歌飙车飚了两万里地！ Name:真栗 Describe:《rage your dream》——动画《头文字D》片尾曲原唱：m.o.v.e翻唱：真栗混音：酸奶茉 Type: Cover:http://i0.hdslb.com/bfs/archive/062085e053107479047cdd2c41be77d212feefbc.jpg}
   bili: [],
   kugou: [],
   qq: [],
@@ -47,37 +48,32 @@ onMounted(() => {
 })
 
 function getRankingData() {
-  // GetBiliMusicRanking().then(result => {
-  //   if (result.code === 200) {
-  //     list.bili = result.data.slice(0, 10)
-  //     list.kugou = result.data.slice(10, 20)
-  //     list.qq = result.data.slice(20, 30)
-  //     list.netease = result.data.slice(30, 40)
-  //   } else {
-  //     LogError(result.message)
-  //   }
-  // }).catch(err => {
-  //   LogError(err)
-  // })
+  GetHotContent("bili").then(result => {
+    if (result.code === 200) {
+      list.bili = result.data.slice(0, 10)
+      list.kugou = result.data.slice(10, 20)
+      list.qq = result.data.slice(20, 30)
+      list.netease = result.data.slice(30, 40)
+    } else {
+      LogError(result.message)
+    }
+  }).catch(err => {
+    LogError(err)
+  })
 }
 
 </script>
 
 <template>
-  <div id="hot" style="padding: 30px 40px 0 40px">
+  <div id="hot" style="padding: 30px 40px">
     <div style="font-size: 35px;color: #272727">热门音乐</div>
     <div class="platform" style="font-size: 18px;color: #272727">哔哩哔哩</div>
     <div class="swiper swiper-bili">
       <swiper class="swiper-wrapper" :modules="modules" :slides-per-group="3" :slides-per-view="3" :space-between="20" navigation>
         <swiper-slide v-for="(o, index) in list.bili" :key="index" class="swiper-bili-slide">
           <el-card :body-style="{ padding: '0px' }">
-            <img :src=o.pic class="image bili-image" alt=""/>
-            <div style="background-color: rgba(84,73,73,0.27);transform: translate(0, -22px);">
-              <span style="font-size: 12px;color: #ffffff">{{ o.view }}</span>
-              <span style="font-size: 12px;color: #ffffff;margin-left: 15px">{{ o.reply }}</span>
-              <span style="font-size: 12px;color: #ffffff;margin-left: 15px">{{ o.like }}</span>
-            </div>
-            <div style="height: 18px;width:253px;transform: translate(0, -20px);">
+            <img :src=o.cover class="image bili-image" alt=""/>
+            <div style="height: 18px;width:253px;">
               <span style="font-size: 12px;font-weight: bold;width:253px;white-space: normal;">{{ o.title }}</span>
             </div>
           </el-card>
@@ -85,62 +81,47 @@ function getRankingData() {
       </swiper>
     </div>
 
-        <div class="platform" style="font-size: 18px;color: #272727">酷狗音乐</div>
-        <div class="swiper swiper-kugou">
-          <swiper class="swiper-wrapper" :modules="modules"  :slides-per-group="3" :slides-per-view="3" :space-between="20" navigation>
-            <swiper-slide v-for="(o, index) in list.kugou" class="swiper-kugou" >
-              <el-card :body-style="{ padding: '0px' }">
-                <img :src=o.pic class="image kugou-image" alt=""/>
-                <div style="background-color: rgba(84,73,73,0.27);transform: translate(0, -22px);">
-                  <span style="font-size: 12px;color: #ffffff">{{o.view}}</span>
-                  <span style="font-size: 12px;color: #ffffff;margin-left: 15px">{{o.reply}}</span>
-                  <span style="font-size: 12px;color: #ffffff;margin-left: 15px">{{o.like}}</span>
-                </div>
-                <div style="height: 18px;width:253px;transform: translate(0, -20px);">
-                  <span style="font-size: 12px;font-weight: bold;width:253px;white-space: normal;">{{o.title}}</span>
-                </div>
-              </el-card>
-            </swiper-slide>
-          </swiper>
-        </div>
+    <div class="platform" style="font-size: 18px;color: #272727">酷狗音乐</div>
+    <div class="swiper swiper-kugou">
+      <swiper class="swiper-wrapper" :modules="modules"  :slides-per-group="3" :slides-per-view="3" :space-between="20" navigation>
+        <swiper-slide v-for="(o, index) in list.kugou" class="swiper-kugou" >
+          <el-card :body-style="{ padding: '0px' }">
+            <img :src=o.cover class="image kugou-image" alt=""/>
+            <div style="height: 18px;width:253px;">
+              <span style="font-size: 12px;font-weight: bold;width:253px;white-space: normal;">{{o.title}}</span>
+            </div>
+          </el-card>
+        </swiper-slide>
+      </swiper>
+    </div>
 
-        <div class="platform" style="font-size: 18px;color: #272727">QQ音乐</div>
-        <div class="swiper swiper-qq">
-          <swiper class="swiper-wrapper" :modules="modules"  :slides-per-group="3" :slides-per-view="3" :space-between="20" navigation>
-            <swiper-slide v-for="(o, index) in list.qq" class="swiper-kugou">
-              <el-card :body-style="{ padding: '0px' }">
-                <img :src=o.pic class="image kugou-image" alt=""/>
-                <div style="background-color: rgba(84,73,73,0.27);transform: translate(0, -22px);">
-                  <span style="font-size: 12px;color: #ffffff">{{o.view}}</span>
-                  <span style="font-size: 12px;color: #ffffff;margin-left: 15px">{{o.reply}}</span>
-                  <span style="font-size: 12px;color: #ffffff;margin-left: 15px">{{o.like}}</span>
-                </div>
-                <div style="height: 18px;width:253px;transform: translate(0, -20px);">
-                  <span style="font-size: 12px;font-weight: bold;width:253px;white-space: normal;">{{o.title}}</span>
-                </div>
-              </el-card>
-            </swiper-slide>
-          </swiper>
-        </div>
+    <div class="platform" style="font-size: 18px;color: #272727">QQ音乐</div>
+    <div class="swiper swiper-qq">
+      <swiper class="swiper-wrapper" :modules="modules"  :slides-per-group="3" :slides-per-view="3" :space-between="20" navigation>
+        <swiper-slide v-for="(o, index) in list.qq" class="swiper-kugou">
+          <el-card :body-style="{ padding: '0px' }">
+            <img :src=o.cover class="image kugou-image" alt=""/>
+            <div style="height: 18px;width:253px;">
+              <span style="font-size: 12px;font-weight: bold;width:253px;white-space: normal;">{{o.title}}</span>
+            </div>
+          </el-card>
+        </swiper-slide>
+      </swiper>
+    </div>
 
-        <div class="platform" style="font-size: 18px;color: #272727">网易云音乐</div>
-        <div class="swiper swiper-cloud">
-          <swiper class="swiper-wrapper" :modules="modules"  :slides-per-group="3" :slides-per-view="3" :space-between="20" navigation>
-            <swiper-slide v-for="(o, index) in list.netease" class="swiper-cloud-slide">
-              <el-card :body-style="{ padding: '0px' }">
-                <img :src=o.pic class="image cloud-image" alt=""/>
-                <div style="background-color: rgba(84,73,73,0.27);transform: translate(0, -22px);">
-                  <span style="font-size: 12px;color: #ffffff">{{o.view}}</span>
-                  <span style="font-size: 12px;color: #ffffff;margin-left: 15px">{{o.reply}}</span>
-                  <span style="font-size: 12px;color: #ffffff;margin-left: 15px">{{o.like}}</span>
-                </div>
-                <div style="height: 18px;width:253px;transform: translate(0, -20px);">
-                  <span style="font-size: 12px;font-weight: bold;width:253px;white-space: normal;">{{o.title}}</span>
-                </div>
-              </el-card>
-            </swiper-slide>
-          </swiper>
-        </div>
+    <div class="platform" style="font-size: 18px;color: #272727">网易云音乐</div>
+    <div class="swiper swiper-cloud">
+      <swiper class="swiper-wrapper" :modules="modules"  :slides-per-group="3" :slides-per-view="3" :space-between="20" navigation>
+        <swiper-slide v-for="(o, index) in list.netease" class="swiper-cloud-slide">
+          <el-card :body-style="{ padding: '0px' }">
+            <img :src=o.cover class="image cloud-image" alt=""/>
+            <div style="height: 18px;width:253px;">
+              <span style="font-size: 12px;font-weight: bold;width:253px;white-space: normal;">{{o.title}}</span>
+            </div>
+          </el-card>
+        </swiper-slide>
+      </swiper>
+    </div>
   </div>
 </template>
 

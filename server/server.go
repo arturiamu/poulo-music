@@ -14,6 +14,7 @@ import (
 	"poulo-music/middleware"
 	"poulo-music/models"
 	"poulo-music/platform"
+	"poulo-music/platform/bili"
 	"poulo-music/platform/migu"
 	"poulo-music/platform/qq"
 )
@@ -35,15 +36,14 @@ func NewServer(cfg *config.Config, log *logrus.Logger) (*Server, error) {
 		return nil, err
 	}
 
-	var cacheDir = cfg.BaseDir + Sep + "cache"
-	//biliClient := bili.NewBili(log, cacheDir)
+	biliClient := bili.NewBili(log, cfg)
 	qqClient := qq.NewQQ(log, cfg)
-	miguClient := migu.NewMigu(log, cacheDir)
+	miguClient := migu.NewMigu(log, cfg)
 
 	var svr = &Server{
 		cfg: cfg,
 		platformMap: map[models.Platform]platform.Platform{
-			//models.PlatformBili: biliClient,
+			models.PlatformBili: biliClient,
 			models.PlatformQQ:   qqClient,
 			models.PlatformMigu: miguClient,
 		},
@@ -91,6 +91,9 @@ func (s *Server) AggregateHotContent(platform models.Platform, param models.GetH
 		return nil, errors.New("platform not found")
 	}
 
+	if platform == models.PlatformBili {
+		param.CachePic = true
+	}
 	return s.platformMap[platform].GetHotContent(s.ctx, param)
 }
 

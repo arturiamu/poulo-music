@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"poulo-music/config"
 	"poulo-music/httpp"
 	"poulo-music/models"
 	"poulo-music/platform"
@@ -22,12 +23,12 @@ const (
 var _ platform.Platform = (*Bili)(nil)
 
 type Bili struct {
-	log   *logrus.Logger
-	cache string //~/Library/Caches/Poulo/cache
+	log *logrus.Logger
+	cfg *config.Config
 }
 
-func NewBili(log *logrus.Logger, cache string) *Bili {
-	return &Bili{log: log, cache: cache}
+func NewBili(log *logrus.Logger, cfg *config.Config) *Bili {
+	return &Bili{log: log, cfg: cfg}
 }
 
 func (b *Bili) GetSearch(ctx context.Context, param models.GetSearchParam) (data []models.GetSearchResp, err error) {
@@ -36,8 +37,31 @@ func (b *Bili) GetSearch(ctx context.Context, param models.GetSearchParam) (data
 }
 
 func (b *Bili) GetHotContent(ctx context.Context, param models.GetHotContentParam) (data []models.GetHotContentResp, err error) {
-	//TODO implement me
-	panic("implement me")
+	var cache = b.cfg.BaseDir + Sep + "cache" //~/Library/Caches/BiliMusicify/cache
+	videoRankingData, err := b.GetVideoRanking(ctx, param.CachePic, cache)
+	if err != nil {
+		b.log.Error(err)
+		return
+	}
+
+	for _, v := range videoRankingData.List {
+		var res = models.GetHotContentResp{
+			Platform:   models.PlatformBili,
+			Identifier: v.Bvid,
+			Title:      v.Title,
+			Name:       v.Owner.Name,
+			Describe:   v.Desc,
+			Cover:      v.Pic,
+		}
+
+		if param.CachePic {
+			filename := "bili_" + v.Bvid + "_pic_" + filepath.Base(v.Pic)
+			res.Cover = fmt.Sprintf("http://localhost:%d/%s", b.cfg.FileServerPort, filename)
+		}
+
+		data = append(data, res)
+	}
+	return
 }
 
 func (b *Bili) GetMusic(ctx context.Context, param models.GetMusicParam) (data models.Music, err error) {
@@ -176,7 +200,7 @@ func (b *Bili) getVideoViewDetailByBvidOrAid(ctx context.Context, bvid string, a
 // uri 可以是 bvid 或者 url
 // savePath 绝对路径,完整文件名
 func (b *Bili) GetVideoMp4ByUri(ctx context.Context, uri string, filename string) (err error) {
-	if strings.HasPrefix(uri, "http://") || strings.HasPrefix(uri, "https://") {
+	if strings.HasPrefix(uri, "http") {
 		//return b.GetVideoMp4ByUrl(ctx, uri, savePath)
 		return b.SaveFile(uri, filename)
 	} else {
@@ -307,6 +331,7 @@ func (b *Bili) GetSearchTypeResult(ctx context.Context, param *models.SearchType
 		b.log.Error(err)
 		return nil, err
 	}
+	fmt.Println(string(bytes))
 	var searchType models.SearchTypeResp
 	err = json.Unmarshal(bytes, &searchType)
 	if err != nil {
@@ -355,6 +380,7 @@ func (b *Bili) saveSearchTypeFile(searchTypeData *models.SearchTypeData, saveDir
 // 参数名	类型	内容	必要性	备注
 // rid	num	目标分区tid	非必要	可参考视频分区一览，只支持主分区
 // type	str	未知	非必要	默认为：all，且为目前唯一已知值。怀疑为稿件类型，但没有找到其他值佐证。
+// saveDir ~/Library/Caches/BiliMusicify/cache
 func (b *Bili) GetVideoRanking(ctx context.Context, saveFile bool, saveDir string) (*models.VideoRankingData, error) {
 	var rankingUrl = "https://api.bilibili.com/x/web-interface/ranking/v2"
 
@@ -383,23 +409,19 @@ func (b *Bili) GetVideoRanking(ctx context.Context, saveFile bool, saveDir strin
 	return &rankingResp.Data, nil
 }
 
-// ~/Library/Caches/BiliMusicify/cache/pic.jpg
+// saveDir ~/Library/Caches/BiliMusicify/cache
 func (b *Bili) saveRankingFile(videoRankingData *models.VideoRankingData, saveDir string) {
 	var wg sync.WaitGroup
 	wg.Add(len(videoRankingData.List))
 	for _, s := range videoRankingData.List {
-		u, err := url.Parse(s.Pic)
-		if err != nil {
-			b.log.Error(err)
-			continue
-		}
+		filename := "bili_" + s.Bvid + "_pic_" + filepath.Base(s.Pic)
 		go func(url, filename string) {
 			defer wg.Done()
 			if !strings.HasPrefix(url, "http") {
 				url = "http:" + url
 			}
-			b.SaveFile(url, filename)
-		}(s.Pic, saveDir+Sep+filepath.Base(u.Path))
+			_ = b.SaveFile(url, filename)
+		}(s.Pic, saveDir+Sep+filename)
 	}
 	wg.Wait()
 }

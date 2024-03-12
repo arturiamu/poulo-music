@@ -59,12 +59,12 @@ body {
 #menu-main{
   background-color: #e8e2e0;
   padding-top:60px;
-  width: 198px;
+  width: 199px;
   height: 100%;
   vertical-align: top;
   display: inline-block;
   --wails-draggable:drag;
-  border-right: 2px solid #c3bebd;
+  border-right: 1px solid #c3bebd;
 }
 
 #player-main{

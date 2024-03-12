@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
+	"poulo-music/config"
 	"poulo-music/httpp"
 	"poulo-music/models"
 	"poulo-music/platform"
@@ -22,12 +23,12 @@ var _ platform.Platform = (*Migu)(nil)
 // code	string	返回的状态码
 // msg	string	返回错误提示！
 type Migu struct {
-	log   *logrus.Logger
-	cache string //~/Library/Caches/Poulo/cache
+	log *logrus.Logger
+	cfg *config.Config
 }
 
-func NewMigu(log *logrus.Logger, cache string) *Migu {
-	return &Migu{log: log, cache: cache}
+func NewMigu(log *logrus.Logger, cfg *config.Config) *Migu {
+	return &Migu{log: log, cfg: cfg}
 }
 
 func (m *Migu) GetSearch(ctx context.Context, param models.GetSearchParam) (data []models.GetSearchResp, err error) {
