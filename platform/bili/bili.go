@@ -293,7 +293,7 @@ func (b *Bili) GetSearchAllResult(ctx context.Context, keyword string) (*models.
 		return nil, err
 	}
 
-	bytes, err := httpp.NewHttp().SetUrl(_url).AddParams(map[string]string{"keyword": keyword}).SetHeader("cookie", cookie).Do()
+	bytes, err := httpp.NewHttp().SetUrl(_url).AddParams(map[string]string{"keyword": keyword}).AddHeader("cookie", cookie).Do()
 
 	var searchAll models.SearchAllResp
 	err = json.Unmarshal(bytes, &searchAll)
@@ -326,7 +326,7 @@ func (b *Bili) GetSearchTypeResult(ctx context.Context, param *models.SearchType
 		return nil, err
 	}
 
-	bytes, err := httpp.NewHttp().SetUrl(searchUrl).SetHeader("cookie", cookie).AddParams(param.ToHttpParamsMap()).Do()
+	bytes, err := httpp.NewHttp().SetUrl(searchUrl).AddHeader("cookie", cookie).AddParams(param.ToHttpParamsMap()).Do()
 	if err != nil {
 		b.log.Error(err)
 		return nil, err

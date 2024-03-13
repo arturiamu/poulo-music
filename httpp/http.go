@@ -30,12 +30,12 @@ func (h *Http) SetMethod(method string) *Http {
 	return h
 }
 
-func (h *Http) SetHeader(key, value string) *Http {
+func (h *Http) AddHeader(key, value string) *Http {
 	h.header[key] = value
 	return h
 }
 
-func (h *Http) SetHeaders(headers map[string]string) *Http {
+func (h *Http) AddHeaders(headers map[string]string) *Http {
 	for k, v := range headers {
 		h.header[k] = v
 	}
@@ -67,6 +67,8 @@ func (h *Http) DoDetail() (*http.Response, error) {
 	} else {
 		h.url += "?" + param
 	}
+
+	h.url = strings.ReplaceAll(h.url, " ", "%20")
 
 	req, err := http.NewRequest(h.method, h.url, strings.NewReader(h.body))
 	if err != nil {

@@ -15,3 +15,7 @@ func TestSearch(t *testing.T) {
 
 	fmt.Printf("%+v\n", data)
 }
+
+func TestSearchApi(t *testing.T) {
+
+}
